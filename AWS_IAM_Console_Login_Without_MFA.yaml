@@ -2,7 +2,7 @@ title: AWS IAM Console Login Without MFA
 id: 1f2d43a2-b713-4a5a-9c6e-faad2e96a6e9
 description: Detects IAM user console login events in AWS CloudTrail that were not authenticated using MFA
 status: experimental
-author: Owaiz Khan (converted from OPA policy)
+author: Owaiz Khan
 references:
   - https://docs.aws.amazon.com/config/latest/developerguide/mfa-enabled-for-iam-console-access.html
 logsource:
