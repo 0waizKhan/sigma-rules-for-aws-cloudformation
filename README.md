@@ -1,0 +1,1 @@
+# sigma-rules-for-aws-cloudformation
