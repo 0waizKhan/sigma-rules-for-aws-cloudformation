@@ -1,51 +1,52 @@
-🛡️ AWS CloudFormation Sigma Detection Rules
-A curated collection of Sigma rules designed to detect suspicious or malicious activity in AWS CloudFormation (CFN) events. These rules help security analysts and threat hunters monitor and respond to anomalies within AWS environments using a platform-agnostic detection format.
+# 🛡️ **AWS CloudFormation Sigma Detection Rules**
 
-📌 What is Sigma?
-Sigma is an open standard for writing SIEM detection rules in a vendor-agnostic YAML format. Sigma rules can be converted into queries for popular platforms such as:
+A curated collection of **Sigma rules** designed to detect suspicious or malicious activity in **AWS CloudFormation (CFN)** events. These rules help security analysts and threat hunters monitor and respond to anomalies within AWS environments using a **platform-agnostic detection format**.
 
-Splunk
+---
 
-ELK/Elastic
+## 📌 **What is Sigma?**
 
-AWS Security Lake
+**[Sigma](https://github.com/SigmaHQ/sigma)** is an open standard for writing SIEM detection rules in a **vendor-agnostic YAML format**.
 
-Chronicle
+With Sigma, you can write once and convert to multiple platforms, such as:
+- Splunk
+- Elastic (ELK)
+- AWS Security Lake
+- Microsoft Sentinel
+- Google Chronicle
+- Graylog
+- and more
 
-Sentinel
+---
 
-and many more
+## 🚀 **Purpose of This Repository**
 
-🚀 Purpose of This Repository
 This repository provides:
 
-Detection rules for identifying misconfigurations and potential abuse in AWS CloudFormation.
+✅ **Detection rules** for identifying misconfigurations and threats in AWS CloudFormation  
+✅ A **starting point** for security teams building cloud-native detection coverage  
+✅ **Platform-independent Sigma YAML rules** ready for conversion
 
-A starting point for blue teams to implement threat detection in cloud-native environments.
+---
 
-Platform-independent Sigma YAML rules ready for conversion to any supported SIEM or log analysis tool.
+## 📂 **Repository Structure**
 
-📂 Repository Structure
-
-aws-cloudformation-sigma/
 │
-├── rules/                       # All Sigma rules for AWS CFN
-│   ├── unauthorized-resource-creation.yml
-│   ├── iam-escalation-via-cfn.yml
-│   └── suspicious-stack-deletion.yml
+├── rules/ # Sigma rules for AWS CFN
+│ ├── unauthorized-resource-creation.yml
+│ ├── iam-escalation-via-cfn.yml
+│ └── suspicious-stack-deletion.yml
 │
-├── converters/                 # Optional scripts for Sigma to SIEM rule conversion
-│   └── convert-to-elastic.sh
+├── converters/ # Optional scripts for rule conversion
+│ └── convert-to-elastic.sh
 │
-├── tests/                      # Sigma rule test cases
+├── tests/ # Test cases for validation
 │
 ├── LICENSE
 └── README.md
 
-🧪 Testing
-You can test rule logic using Sigmac or convert them using your preferred backend.
+## 🧪 Testing Rules
+You can test or convert rules using sigmac:
 
 sigmac -t es-qs rules/iam-escalation-via-cfn.yml
 
-📫 Contact
-For suggestions or queries, feel free to open an issue or contact the maintainer.
