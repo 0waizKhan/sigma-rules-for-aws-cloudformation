@@ -1,0 +1,39 @@
+title: AWS API Gateway Cache Not Encrypted or EBS Encryption Not Enabled
+id: 540b25a1-e6e1-4d10-81b7-d7e4b56d8e3e
+description: Detects creation or update of API Gateway without cache encryption or EC2 with EBS default encryption not enabled
+status: experimental
+author: Owaiz Khan (converted from OPA Rego policy)
+references:
+  - https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_EnableEbsEncryptionByDefault.html
+  - https://docs.aws.amazon.com/config/latest/developerguide/api-gw-cache-enabled-and-encrypted.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  apiGwUnencrypted:
+    eventName: UpdateStage
+    eventSource: apigateway.amazonaws.com
+    requestParameters.cacheClusterEnabled: true
+    requestParameters.cacheDataEncrypted: false
+
+  ebsEncryptionNotEnabled:
+    eventName: DisableEbsEncryptionByDefault
+    eventSource: ec2.amazonaws.com
+
+  condition: apiGwUnencrypted or ebsEncryptionNotEnabled
+fields:
+  - userIdentity.arn
+  - requestParameters
+  - eventTime
+  - sourceIPAddress
+falsepositives:
+  - Temporary testing stages in API Gateway
+  - Intentional EBS encryption disable for legacy systems
+level: high
+tags:
+  - aws
+  - configuration
+  - ebs
+  - apigateway
+  - encryption
+  - compliance
