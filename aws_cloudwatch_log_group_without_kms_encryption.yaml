@@ -1,0 +1,35 @@
+title: AWS CloudWatch Log Group Without KMS Encryption
+id: 178f13be-c346-4d36-a8e2-084b867b8fc4
+description: Detects creation or update of AWS CloudWatch Log Groups that do not specify KMS Key for encryption
+status: experimental
+author: Owaiz Khan 
+references:
+  - https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/encrypt-log-data-kms.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  logGroupUnencrypted:
+    eventSource: logs.amazonaws.com
+    eventName|contains:
+      - CreateLogGroup
+      - PutRetentionPolicy
+      - AssociateKmsKey
+    NOT requestParameters.kmsKeyId: "*"
+  condition: logGroupUnencrypted
+fields:
+  - userIdentity.arn
+  - requestParameters.logGroupName
+  - eventTime
+  - sourceIPAddress
+falsepositives:
+  - Log groups intentionally left unencrypted for public, test, or short-lived workloads
+  - Logs from services that do not support KMS encryption yet
+level: high
+tags:
+  - aws
+  - cloudwatch
+  - kms
+  - encryption
+  - compliance
+  - configuration
