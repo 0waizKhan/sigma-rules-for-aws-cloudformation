@@ -1,0 +1,39 @@
+title: AWS DynamoDB Table Created or Updated Without KMS CMK Encryption
+id: b4f78859-1df2-4021-bf26-629b7d2f8856
+description: Detects creation or update of AWS DynamoDB tables without specifying a customer-managed KMS key (CMK) for encryption
+status: experimental
+author: Owaiz Khan 
+references:
+  - https://docs.aws.amazon.com/config/latest/developerguide/dynamodb-table-encrypted-kms.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  createTableUnencrypted:
+    eventSource: dynamodb.amazonaws.com
+    eventName: CreateTable
+    NOT requestParameters.sSESpecification.kMSMasterKeyId: "*"
+
+  updateTableUnencrypted:
+    eventSource: dynamodb.amazonaws.com
+    eventName: UpdateTable
+    NOT requestParameters.sSESpecification.kMSMasterKeyId: "*"
+
+  condition: createTableUnencrypted or updateTableUnencrypted
+fields:
+  - userIdentity.arn
+  - requestParameters.tableName
+  - requestParameters.sSESpecification
+  - eventTime
+  - sourceIPAddress
+falsepositives:
+  - Default AWS-managed KMS key used intentionally (no CMK)
+  - Temporary test or low-sensitivity datasets
+level: high
+tags:
+  - aws
+  - dynamodb
+  - kms
+  - encryption
+  - compliance
+  - configuration
