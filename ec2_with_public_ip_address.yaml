@@ -1,0 +1,41 @@
+title: AWS EC2 Instance Launched With a Public IP Address
+id: 113cfab2-b9de-4128-813b-7f0a4580b911
+description: Detects EC2 instances launched with a public IP address, violating least-privilege and network isolation policies
+status: experimental
+author: Owaiz Khan
+references:
+  - https://docs.aws.amazon.com/config/latest/developerguide/ec2-instance-no-public-ip.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  publicIpAssignedInNetworkInterfaces:
+    eventSource: ec2.amazonaws.com
+    eventName: RunInstances
+    requestParameters.networkInterfaceSet.items[*].associatePublicIpAddress: true
+
+  publicIpAssignedDirectly:
+    eventSource: ec2.amazonaws.com
+    eventName: RunInstances
+    requestParameters.networkInterfaces: null
+    requestParameters.associatePublicIpAddress: true
+
+  condition: publicIpAssignedInNetworkInterfaces or publicIpAssignedDirectly
+fields:
+  - userIdentity.arn
+  - requestParameters.networkInterfaceSet
+  - requestParameters.associatePublicIpAddress
+  - sourceIPAddress
+  - eventTime
+falsepositives:
+  - Instances intentionally exposed to the internet (bastion hosts, test environments)
+  - Misconfigured launch templates or auto-scaling policies
+level: high
+tags:
+  - aws
+  - ec2
+  - networking
+  - public-ip
+  - cloudtrail
+  - compliance
+  - misconfiguration
