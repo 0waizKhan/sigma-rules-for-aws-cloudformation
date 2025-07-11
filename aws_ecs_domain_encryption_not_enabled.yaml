@@ -1,0 +1,33 @@
+title: AWS Elasticsearch Domain Created Without Encryption at Rest
+id: e78a58a7-91d6-4d9f-b5ec-9be291ab427e
+description: Detects creation of Amazon Elasticsearch (OpenSearch) domains where encryption at rest is not enabled
+status: experimental
+author: Owaiz Khan 
+references:
+  - https://docs.aws.amazon.com/config/latest/developerguide/elasticsearch-encrypted-at-rest.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  unencryptedElasticsearch:
+    eventSource: es.amazonaws.com
+    eventName: CreateElasticsearchDomain
+    requestParameters.encryptionAtRestOptions.enabled: false
+  condition: unencryptedElasticsearch
+fields:
+  - userIdentity.arn
+  - requestParameters.domainName
+  - requestParameters.encryptionAtRestOptions
+  - eventTime
+  - sourceIPAddress
+falsepositives:
+  - Domains created for development or internal use only
+  - Legacy configurations before encryption policies were enforced
+level: high
+tags:
+  - aws
+  - elasticsearch
+  - opensearch
+  - encryption
+  - cloudtrail
+  - compliance
