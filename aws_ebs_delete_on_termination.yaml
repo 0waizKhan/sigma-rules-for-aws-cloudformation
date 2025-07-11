@@ -1,0 +1,40 @@
+title: AWS EC2 EBS Volume Not Set to Delete on Termination (Launch or Modify)
+id: c98b5e37-7d96-4a56-b19f-51e5ffb88b41
+description: Detects EC2 instance launches or attribute modifications where attached EBS volumes are not configured to delete upon instance termination
+status: experimental
+author: Owaiz Khan
+references:
+  - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-deleting-volume.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  runInstanceNonTerminating:
+    eventSource: ec2.amazonaws.com
+    eventName: RunInstances
+    requestParameters.blockDeviceMappings[*].ebs.deleteOnTermination: false
+
+  modifyInstanceNonTerminating:
+    eventSource: ec2.amazonaws.com
+    eventName: ModifyInstanceAttribute
+    requestParameters.blockDeviceMapping[*].ebs.deleteOnTermination: false
+
+  condition: runInstanceNonTerminating or modifyInstanceNonTerminating
+fields:
+  - userIdentity.arn
+  - requestParameters.blockDeviceMappings
+  - requestParameters.blockDeviceMapping
+  - requestParameters.instanceId
+  - eventTime
+  - sourceIPAddress
+falsepositives:
+  - Backup or forensic use cases requiring volume persistence
+  - Controlled lifecycle policies for volume retention
+level: medium
+tags:
+  - aws
+  - ec2
+  - ebs
+  - cost-optimization
+  - cloudtrail
+  - compliance
