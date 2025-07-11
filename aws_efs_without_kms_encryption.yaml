@@ -1,0 +1,40 @@
+title: AWS EFS File System Created Without KMS Encryption
+id: 9ef32727-87c7-4627-baba-37c4dbd1952c
+description: Detects creation of an EFS file system that is not encrypted or does not use a customer-managed KMS key
+status: experimental
+author: Owaiz Khan 
+references:
+  - https://docs.aws.amazon.com/config/latest/developerguide/efs-encrypted-check.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  efsUnencrypted:
+    eventSource: elasticfilesystem.amazonaws.com
+    eventName: CreateFileSystem
+    requestParameters.encrypted: false
+
+  efsEncryptedNoKMS:
+    eventSource: elasticfilesystem.amazonaws.com
+    eventName: CreateFileSystem
+    requestParameters.encrypted: true
+    NOT requestParameters.kmsKeyId: "*"
+
+  condition: efsUnencrypted or efsEncryptedNoKMS
+fields:
+  - userIdentity.arn
+  - requestParameters.encrypted
+  - requestParameters.kmsKeyId
+  - eventTime
+  - sourceIPAddress
+falsepositives:
+  - Use of AWS-managed default KMS key (if organization allows it)
+  - Testing or temporary non-sensitive environments
+level: high
+tags:
+  - aws
+  - efs
+  - encryption
+  - kms
+  - cloudtrail
+  - compliance
