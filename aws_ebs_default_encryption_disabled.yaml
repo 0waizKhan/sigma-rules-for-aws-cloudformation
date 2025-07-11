@@ -1,0 +1,31 @@
+title: AWS EBS Encryption By Default Disabled
+id: 4268d1ba-6fd1-4f5b-9c78-7b041a6a2de3
+description: Detects AWS API calls where EBS encryption by default is disabled
+status: experimental
+author: Owaiz Khan
+references:
+  - https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/EBSEncryption.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  disableEbsEncryption:
+    eventSource: ec2.amazonaws.com
+    eventName: DisableEbsEncryptionByDefault
+  condition: disableEbsEncryption
+fields:
+  - userIdentity.arn
+  - requestParameters
+  - sourceIPAddress
+  - eventTime
+falsepositives:
+  - Manual disable for testing or migration scenarios
+  - Temporary rollback for backward compatibility
+level: high
+tags:
+  - aws
+  - ec2
+  - ebs
+  - encryption
+  - compliance
+  - cloudtrail
