@@ -1,0 +1,33 @@
+title: AWS IAM Password Policy Configured with MaxPasswordAge Less Than 90 Days
+id: 7e2bde8f-68cc-41df-90a1-13d37ec3dc24
+description: Detects changes to the AWS IAM Account Password Policy where MaxPasswordAge is set to less than 90 days, violating standard security policy
+status: experimental
+author: Owaiz Khan 
+references:
+  - https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  weakPasswordPolicy:
+    eventSource: iam.amazonaws.com
+    eventName: UpdateAccountPasswordPolicy
+    requestParameters.maxPasswordAge: 
+      lt: 90
+  condition: weakPasswordPolicy
+fields:
+  - userIdentity.arn
+  - requestParameters.maxPasswordAge
+  - eventTime
+  - sourceIPAddress
+falsepositives:
+  - Temporary relaxation for legacy systems
+  - Policy rollback during migrations
+level: medium
+tags:
+  - aws
+  - iam
+  - password-policy
+  - compliance
+  - cloudtrail
+  - security
