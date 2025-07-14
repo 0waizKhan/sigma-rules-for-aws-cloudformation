@@ -1,0 +1,33 @@
+title: AWS Redshift Cluster Created with Public Access Enabled
+id: d2e2a7dc-9a38-4e5b-a2dc-0dbe7e7258a0
+description: Detects creation of Redshift clusters with public access enabled, violating security best practices
+status: experimental
+author: Owaiz Khan 
+references:
+  - https://docs.aws.amazon.com/config/latest/developerguide/redshift-cluster-public-access-check.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  redshiftPublicAccess:
+    eventSource: redshift.amazonaws.com
+    eventName: CreateCluster
+    requestParameters.publiclyAccessible: true
+  condition: redshiftPublicAccess
+fields:
+  - userIdentity.arn
+  - requestParameters.clusterIdentifier
+  - requestParameters.publiclyAccessible
+  - eventTime
+  - sourceIPAddress
+falsepositives:
+  - Publicly exposed clusters intentionally deployed in test environments
+  - Controlled access via security groups and VPC settings
+level: high
+tags:
+  - aws
+  - redshift
+  - misconfiguration
+  - public-access
+  - cloudtrail
+  - compliance
