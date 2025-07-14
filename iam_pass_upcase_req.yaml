@@ -1,0 +1,31 @@
+title: AWS IAM Password Policy Missing Uppercase Character Requirement
+id: 2917c3df-9029-4b38-8c42-674e9ea351a2
+description: Detects IAM password policy updates that do not enforce uppercase character requirements
+status: experimental
+author: Owaiz Khan 
+references:
+  - https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  noUppercaseRequirement:
+    eventSource: iam.amazonaws.com
+    eventName: UpdateAccountPasswordPolicy
+    requestParameters.requireUppercaseCharacters: false
+  condition: noUppercaseRequirement
+fields:
+  - userIdentity.arn
+  - requestParameters.requireUppercaseCharacters
+  - eventTime
+  - sourceIPAddress
+falsepositives:
+  - Temporary rollback of password complexity for legacy user onboarding
+level: high
+tags:
+  - aws
+  - iam
+  - password-policy
+  - complexity
+  - cloudtrail
+  - compliance
