@@ -1,10 +1,10 @@
-# 🛡️ **AWS CloudFormation Sigma Detection Rules**
+# **AWS CloudFormation Sigma Detection Rules**
 
 A curated collection of **Sigma rules** designed to detect suspicious or malicious activity in **AWS CloudFormation (CFN)** events. These rules help security analysts and threat hunters monitor and respond to anomalies within AWS environments using a **platform-agnostic detection format**.
 
 ---
 
-## 📌 **What is Sigma?**
+## **What is Sigma?**
 
 **[Sigma](https://github.com/SigmaHQ/sigma)** is an open standard for writing SIEM detection rules in a **vendor-agnostic YAML format**.
 
@@ -19,7 +19,7 @@ With Sigma, you can write once and convert to multiple platforms, such as:
 
 ---
 
-## 🚀 **Purpose of This Repository**
+##  **Purpose of This Repository**
 
 This repository provides:
 
@@ -29,7 +29,7 @@ This repository provides:
 
 ---
 
-## 📂 **Repository Structure**
+##  **Repository Structure**
 
 │
 ├── rules/ # Sigma rules for AWS CFN
@@ -45,7 +45,7 @@ This repository provides:
 ├── LICENSE
 └── README.md
 
-## 🧪 Testing Rules
+##  Testing Rules
 You can test or convert rules using sigmac:
 
 sigmac -t es-qs rules/iam-escalation-via-cfn.yml
