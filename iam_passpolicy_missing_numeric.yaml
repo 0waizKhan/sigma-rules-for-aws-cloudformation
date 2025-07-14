@@ -1,0 +1,31 @@
+title: AWS IAM Password Policy Missing Numeric Character Requirement
+id: 47d88ef0-3010-4f8d-9f9a-431c8c2dc003
+description: Detects when an IAM password policy is configured without requiring numeric characters, violating complexity standards
+status: experimental
+author: Owaiz Khan 
+references:
+  - https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  noNumberRequirement:
+    eventSource: iam.amazonaws.com
+    eventName: UpdateAccountPasswordPolicy
+    requestParameters.requireNumbers: false
+  condition: noNumberRequirement
+fields:
+  - userIdentity.arn
+  - requestParameters.requireNumbers
+  - eventTime
+  - sourceIPAddress
+falsepositives:
+  - Temporary rollback for password reset or user onboarding
+level: high
+tags:
+  - aws
+  - iam
+  - password-policy
+  - password-complexity
+  - cloudtrail
+  - compliance
