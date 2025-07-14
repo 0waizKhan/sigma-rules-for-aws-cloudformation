@@ -1,0 +1,32 @@
+title: AWS IAM Password Policy Configured with Weak Minimum Password Length
+id: 8616e08c-cf09-4f5c-8135-7b1187eac52f
+description: Detects when the IAM password policy is updated with a MinimumPasswordLength not equal to 12, violating security standards
+status: experimental
+author: Owaiz Khan 
+references:
+  - https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  weakMinPasswordLength:
+    eventSource: iam.amazonaws.com
+    eventName: UpdateAccountPasswordPolicy
+    NOT requestParameters.minimumPasswordLength: 12
+  condition: weakMinPasswordLength
+fields:
+  - userIdentity.arn
+  - requestParameters.minimumPasswordLength
+  - eventTime
+  - sourceIPAddress
+falsepositives:
+  - Temporary security profile changes
+  - Compatibility changes for legacy systems
+level: high
+tags:
+  - aws
+  - iam
+  - password-policy
+  - compliance
+  - cloudtrail
+  - security
