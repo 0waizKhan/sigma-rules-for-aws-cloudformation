@@ -1,0 +1,32 @@
+title: AWS IAM Password Policy Configured with Weak Password Reuse Prevention
+id: 5a17c579-b0cf-4a67-bb28-f6f738e76ac1
+description: Detects updates to IAM password policy where PasswordReusePrevention is not set to 24, violating password history security policy
+status: experimental
+author: Owaiz Khan 
+references:
+  - https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_passwords_account-policy.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  weakPasswordReusePrevention:
+    eventSource: iam.amazonaws.com
+    eventName: UpdateAccountPasswordPolicy
+    NOT requestParameters.passwordReusePrevention: 24
+  condition: weakPasswordReusePrevention
+fields:
+  - userIdentity.arn
+  - requestParameters.passwordReusePrevention
+  - sourceIPAddress
+  - eventTime
+falsepositives:
+  - Temporary relaxation during policy rollout
+  - Compatibility changes for legacy systems
+level: high
+tags:
+  - aws
+  - iam
+  - password-policy
+  - compliance
+  - cloudtrail
+  - security
