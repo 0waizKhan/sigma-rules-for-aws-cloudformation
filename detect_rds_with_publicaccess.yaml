@@ -1,0 +1,33 @@
+title: AWS RDS Instance Created with Public Access Enabled
+id: 53b2d112-1c37-40b7-8ec7-2ae9491809a7
+description: Detects creation of an RDS DB instance that is publicly accessible, which violates network security best practices
+status: experimental
+author: Owaiz Khan
+references:
+  - https://docs.aws.amazon.com/config/latest/developerguide/rds-instance-public-access-check.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  rdsPubliclyAccessible:
+    eventSource: rds.amazonaws.com
+    eventName: CreateDBInstance
+    requestParameters.publiclyAccessible: true
+  condition: rdsPubliclyAccessible
+fields:
+  - userIdentity.arn
+  - requestParameters.dBInstanceIdentifier
+  - requestParameters.publiclyAccessible
+  - sourceIPAddress
+  - eventTime
+falsepositives:
+  - Intended public access for external apps (e.g., SaaS dev/testing)
+  - Temporary exposure under controlled firewall/VPC settings
+level: high
+tags:
+  - aws
+  - rds
+  - misconfiguration
+  - public-access
+  - cloudtrail
+  - compliance
