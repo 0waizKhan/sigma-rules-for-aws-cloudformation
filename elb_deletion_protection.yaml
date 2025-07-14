@@ -1,0 +1,41 @@
+title: AWS ELB Created or Updated Without Deletion Protection Enabled
+id: 802ec022-7346-42d7-ae80-6cb45f4e95b7
+description: Detects when an Elastic Load Balancer is created or modified without deletion protection enabled
+status: experimental
+author: Owaiz Khan 
+references:
+  - https://docs.aws.amazon.com/config/latest/developerguide/elb-deletion-protection-enabled.html
+logsource:
+  service: cloudtrail
+  category: configuration
+detection:
+  elbWithoutDeletionProtectionOnCreate:
+    eventSource: elasticloadbalancing.amazonaws.com
+    eventName: CreateLoadBalancer
+    requestParameters.attributes[*].key: deletion_protection.enabled
+    requestParameters.attributes[*].value: false
+
+  elbWithoutDeletionProtectionOnModify:
+    eventSource: elasticloadbalancing.amazonaws.com
+    eventName: ModifyLoadBalancerAttributes
+    requestParameters.attributes[*].key: deletion_protection.enabled
+    requestParameters.attributes[*].value: false
+
+  condition: elbWithoutDeletionProtectionOnCreate or elbWithoutDeletionProtectionOnModify
+fields:
+  - userIdentity.arn
+  - requestParameters.loadBalancerName
+  - requestParameters.attributes
+  - sourceIPAddress
+  - eventTime
+falsepositives:
+  - Test environments or short-lived workloads
+  - Controlled deletion under IAM policy or manual approval
+level: high
+tags:
+  - aws
+  - elb
+  - deletion-protection
+  - cloudtrail
+  - configuration
+  - compliance
